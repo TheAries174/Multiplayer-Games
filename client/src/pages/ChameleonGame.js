@@ -1,8 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react'
 import { SocketContext } from "../socket"
 import { useLocation, useParams } from "react-router-dom";
-import changeIcon from "../assets/images/change-icon.png"
 import ChameleonTable from "../components/ChameleonTable"
+import ChameleonPlayerActionContainer from "../components/ChameleonPlayerActionContainer"
+import ChameleonImageContainer from '../components/ChameleonImageContainer';
+
 const ChameleonGame = () => {
 
   const socket = React.useContext(SocketContext);
@@ -65,7 +67,7 @@ const ChameleonGame = () => {
       setScores(data.scores)
       setTopic(data.topic)
       setChameleonPlayer(data.chameleonPlayer)
-      setIsChecked(true)
+      setIsChecked(false)
       setWordClue("")
       setPlayerReady(initPlayerReady)
       setVotes(initVotes)
@@ -81,10 +83,6 @@ const ChameleonGame = () => {
       socket.off("chameleonNextRound")
     }
   }, [])
-
- /*  useEffect(() => {
-    //chameleonUpdateGameStateServer
-  }, [playerReady]) */
 
   //initialize states
   let initVotes = []
@@ -128,6 +126,19 @@ const ChameleonGame = () => {
   const [isChecked, setIsChecked] = useState(true)
   const [winner, setWinner] = useState("")
 
+  function randomizeTopic(){
+    const topicNum = topicArray.length
+    const randNum = Math.floor(Math.random()*topicNum)
+    currentTopic.current = topicArray[randNum]
+    return currentTopic.current
+  }
+
+  function chooseChameleonPlayer() {
+    let randNum = Math.floor(Math.random() * users.length)
+    currentChameleonPlayer.current = users[randNum].userName 
+    return currentChameleonPlayer.current
+  }
+
   function checkBoxHandler() {
     setIsChecked((oldIsChecked) => !oldIsChecked)
     socket.emit("chameleonUpdateGameStateServer", {
@@ -138,37 +149,12 @@ const ChameleonGame = () => {
     })
   }
 
-  function randomizeTopic(){
-    const topicNum = topicArray.length
-    const randNum = Math.floor(Math.random()*topicNum)
-    currentTopic.current = topicArray[randNum]
-    return currentTopic.current
-  }
-
-  function roundHandler() {
-    const tempScores = [...scores]
-    const newScores = tempScores.map((obj) => {
-      if(obj.userName === chameleonPlayer && winner==="chameleon") {
-        return {...obj, score: obj.score+2}
-      }
-      else if (obj.userName !== chameleonPlayer && winner==="team") {
-        return {...obj, score: obj.score+1}
-      } else return obj
-    })
-    socket.emit("chameleonNextRoundServer", {
-      scores: newScores,
+  function voteHandler() {
+    socket.emit("chameleonUpdateVoteServer", {
       gameId: gameId,
-      topic: randomizeTopic(),
-      chameleonPlayer: chooseChameleonPlayer(),
-      roundNum: roundNum+1
+      currentUser: currentUser,
+      playerVote: playerVote,
     })
-
-  }
-
-  function chooseChameleonPlayer() {
-    let randNum = Math.floor(Math.random() * users.length)
-    currentChameleonPlayer.current = users[randNum].userName 
-    return currentChameleonPlayer.current
   }
 
   function randomizeHandler() {
@@ -181,15 +167,29 @@ const ChameleonGame = () => {
     }
   }
 
-  function voteHandler() {
-    socket.emit("chameleonUpdateVoteServer", {
+  function roundHandler() {
+    if (isGameMaster) {
+      const tempScores = [...scores]
+      const newScores = tempScores.map((obj) => {
+        if(obj.userName === chameleonPlayer && winner==="chameleon") {
+          return {...obj, score: obj.score+2}
+        }
+        else if (obj.userName !== chameleonPlayer && winner==="team") {
+          return {...obj, score: obj.score+1}
+        } else return obj
+      })
+    socket.emit("chameleonNextRoundServer", {
+      scores: newScores,
       gameId: gameId,
-      currentUser: currentUser,
-      playerVote: playerVote,
+      topic: randomizeTopic(),
+      chameleonPlayer: chooseChameleonPlayer(),
+      roundNum: roundNum+1
     })
+    }
   }
+
   return (
-    <div className="containerAll">
+    <div className="chameleonContainerAll">
       <ChameleonTable
         votes={votes}
         users={users}
@@ -198,73 +198,27 @@ const ChameleonGame = () => {
         scores={scores}
         currentUser={currentUser}
       />
-      <div className="imageContainer">
-        <img 
-          src={require(`../assets/chameleon/${topic}.png`)}
-          alt="topic"
-          width="100%"
-        />
-        <div className="playerRole">
-          {currentUser.userName === chameleonPlayer? "You are the Chameleon!" : "You are NOT the Chameleon!"}
-        </div>
-      </div>
-      <div className="playerActionContainer">
-        <label htmlFor="wordClue">
-          Word Clue
-          <input 
-            type="text" 
-            id="wordClue"
-            value={wordClue} 
-            onChange={(event) => setWordClue(event.target.value)}
-          />
-        </label>
-        <label htmlFor="playerReady">
-          Ready? 
-          <input 
-            type="checkbox" 
-            id="playerReady"
-            value={isChecked}
-            onChange={checkBoxHandler}
-          />
-        </label>
-        <div>
-          <label htmlFor="playerVote">
-            Vote
-            <select
-              id="playerVote"
-              value={playerVote}
-              onChange={(event) => setPlayerVote(event.target.value)}
-            >
-              <option value="" defaultValue>--Choose--</option>
-              {users.map((user) => {
-                if (user.userName!==currentUser.userName) {
-                  return <option value={user.userName} key={user.userId}>{user.userName}</option>
-                } else return null
-              })}
-            </select>
-          </label>
-          <button onClick={voteHandler}>Submit Vote</button>
-        </div>
-        <div>
-          <label htmlFor="winner">
-            Who won?
-            <select
-              id="winner"
-              value={winner}
-              onChange={(event) => setWinner(event.target.value)}
-            >
-              <option>--Choose--</option>
-              <option value="team">Team</option>
-              <option value="chameleon">Chameleon</option>
-            </select>
-          </label>  
-          <button onClick={roundHandler}>Next Round</button>  
-        </div>
-        <div>
-          <p>{`Round ${roundNum}`}</p>
-          <img src={changeIcon} alt="random-icon" width="20px" style={{display: "inline"}} onClick={randomizeHandler}/>
-        </div>
-      </div>
+      <ChameleonImageContainer 
+        topic={topic}
+        chameleonPlayer={chameleonPlayer}
+        currentUser={currentUser}
+      />
+      <ChameleonPlayerActionContainer 
+          wordClue={wordClue} 
+          setWordClue={setWordClue}
+          isChecked={isChecked}
+          checkBoxHandler={checkBoxHandler}
+          playerVote={playerVote}
+          setPlayerVote={setPlayerVote}
+          users={users}
+          currentUser={currentUser}
+          voteHandler={voteHandler}
+          winner={winner}
+          setWinner={setWinner}
+          roundHandler={roundHandler}  
+          roundNum={roundNum}
+          randomizeHandler={randomizeHandler}
+      />
     </div>
   )
 }
