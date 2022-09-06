@@ -9,7 +9,9 @@ function RoomOneTeam(props) {
   const navigate = useNavigate()
   function startGame(){
     if (props.isGameMaster) {
-      navigate(`/games/chameleon/room${props.gameId}/${props.users[0].userName}`, {state: {isGameMaster: props.isGameMaster, users: props.users, data: {topic: "", chameleonPlayer: ""} }})
+      const urlLink = `/games/${props.gameName}/room${props.gameId}/${props.users[0].userName}`
+      const urlState = {state: {isGameMaster: props.isGameMaster, users: props.users, data: {topic: "", chameleonPlayer: ""} }}
+      navigate(urlLink, urlState)
     }
   }
   return (

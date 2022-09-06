@@ -65,12 +65,14 @@ const ChameleonCreateRoom = () => {
       socket.off("chameleonReceivePlayers")
     }
   })
-    
+  
+ 
   return (
   <RoomOneTeam 
     gameId={gameId}
     users={users}
     isGameMaster={isGameMaster}
+    gameName={"chameleon"}
   />
 )
 }
