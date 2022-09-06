@@ -12,7 +12,7 @@ const ChameleonGame = () => {
   const {isGameMaster, users, data} = location.state
   const currentUser = users.find( (user) => socket.id === user.userId )
   const { gameId } = useParams()
-  const currentTopic = useRef()
+  const currentTopic = useRef({})
   const currentChameleonPlayer = useRef()
 
   useEffect(() => {
@@ -26,8 +26,9 @@ const ChameleonGame = () => {
     }
     console.log("page is rendered")
     socket.on("chameleonUpdateTopic", (currentTopic) => {
-      console.log(`The new Topic is ${currentTopic}`)
-      setTopic(currentTopic)})
+      console.log(`The new Topic is ${currentTopic.name}`)
+      setTopic(currentTopic)
+    })
 
     socket.on("chameleonUpdateGameState", (data) => {
       setWords((oldWords) => {
@@ -63,7 +64,6 @@ const ChameleonGame = () => {
     })
 
     socket.on("chameleonNextRound", (data) => {
-      console.log(data.topic)
       setScores(data.scores)
       setTopic(data.topic)
       setChameleonPlayer(data.chameleonPlayer)
@@ -114,7 +114,7 @@ const ChameleonGame = () => {
     "sport", "transportmittel", "weltwunder", "zeichentrick-tiere", "zivilisation", "zoo"
   ]
 
-  const [topic, setTopic] = useState(data.topic !== "" ? data.topic : randomizeTopic() ) //change
+  const [topic, setTopic] = useState(isGameMaster ? randomizeTopic : data.topic) 
   const [votes, setVotes] = useState(initVotes)
   const [words, setWords] = useState(initWords)
   const [playerReady, setPlayerReady] = useState(initPlayerReady)
@@ -122,14 +122,23 @@ const ChameleonGame = () => {
   const [wordClue, setWordClue] = useState("")
   const [playerVote, setPlayerVote] = useState("")
   const [roundNum, setRoundNum] = useState(1)
-  const [chameleonPlayer, setChameleonPlayer] = useState(data.chameleonPlayer !== "" ? data.chameleonPlayer: chooseChameleonPlayer() )
+  const [chameleonPlayer, setChameleonPlayer] = useState(data.chameleonPlayer !== "" ? data.chameleonPlayer : chooseChameleonPlayer())
   const [isChecked, setIsChecked] = useState(true)
   const [winner, setWinner] = useState("")
 
   function randomizeTopic(){
     const topicNum = topicArray.length
     const randNum = Math.floor(Math.random()*topicNum)
-    currentTopic.current = topicArray[randNum]
+    const randCol = Math.ceil(Math.random()*4)
+    const randRow = Math.ceil(Math.random()*4)
+    const randTopic = topicArray[randNum]
+    console.log(randTopic)
+    currentTopic.current = {
+      name: randTopic,
+      column: randCol,
+      row: randRow,
+    } 
+    console.log(JSON.stringify(currentTopic.current))
     return currentTopic.current
   }
 

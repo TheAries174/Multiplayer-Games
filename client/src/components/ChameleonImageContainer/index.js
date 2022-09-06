@@ -19,10 +19,14 @@ const ChameleonImageContainer = (props) => {
  
     // get context of the canvas
     ctx = canvasEle.getContext("2d");
-    const r1Info = { x: 58, y: 290, w: 376, h: 195 }; //size of original category rectangle
-    const r1Style = { borderColor: 'purple', borderWidth: 5 };
-    drawRect(r1Info, r1Style);
-  }, [width, height]);
+    
+    //Only draw Rectangle if player is not Chameleon
+    if(props.currentUser.userName !== props.chameleonPlayer) {
+      const rectInfo = { x: 58, y: 290, w: 376, h: 195 }; //size of original category rectangle in col:1, row:1
+      const rectStyle = { borderColor: 'purple', borderWidth: 5 };  
+      drawRect(rectInfo, rectStyle);
+    }
+  }, [width, height,props.topic]);
 
   //draw rect relative to canvas size
   const drawRect = (info, style = {}) => {
@@ -34,9 +38,11 @@ const ChameleonImageContainer = (props) => {
     //measurements of original picture
     const origWidth = 1605
     const origHeight = 1103
+    const widthOffset = 376
+    const heightOffset = 195
 
-    x = x*width/origWidth + 376*width/origWidth;
-    y = y*height/origHeight + 195*height/origHeight;
+    x = x*width/origWidth + widthOffset*width/origWidth*(props.topic.row-1);
+    y = y*height/origHeight + heightOffset*height/origHeight*(props.topic.column-1);
     w = w*width/origWidth;
     h = h*height/origHeight;
     ctx.rect(x, y, w, h);
@@ -46,7 +52,7 @@ const ChameleonImageContainer = (props) => {
   return (
     <div className="imageContainer" ref={componentRef}>
       <img 
-        src={require(`../../assets/chameleon/${props.topic}.png`)}
+        src={require(`../../assets/chameleon/${props.topic.name}.png`)}
         alt="topic"
         width="100%" 
       />

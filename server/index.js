@@ -74,8 +74,8 @@ io.on("connection", (socket) => {
 
 	socket.on("chameleonInitPlayers", (data) => {
 		console.log(`All the Players joined room ${data.gameId}`)
-		console.log(`The topic is ${data.topic} and the chameleon is ${data.chameleonPlayer}`)
-		socket.broadcast.to(data.gameId).emit("chameleonReceivePlayers", data)
+		console.log(`The topic is ${data.topic.name} and the chameleon is ${data.chameleonPlayer}`)
+		io.to(data.gameId).emit("chameleonReceivePlayers", data)
 	})
 
 	socket.on("chameleonUpdateGameStateServer", (data) => {
@@ -84,7 +84,7 @@ io.on("connection", (socket) => {
 	})
 
 	socket.on("chameleonUpdateTopicServer", (data) => {
-		console.log(`The new topic is ${data.currentTopic}`)
+		console.log(`The new topic is ${data.currentTopic.name}`)
 		socket.broadcast.to(data.gameId).emit("chameleonUpdateTopic", data.currentTopic)
 	})
 
