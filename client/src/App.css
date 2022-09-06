@@ -1,0 +1,174 @@
+* {
+  box-sizing: border-box;
+  font-family: Inter, sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #dedede;
+}
+
+input, label, select {
+  display:block;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FDFDFD;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  height: 65px;
+  font-size: 24px;
+  border-radius: 10px;
+}
+
+.navbar--logo {
+  width: 40px;
+  margin: 0 20px 0 50px;
+}
+
+.navbar-item1 {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-item2 {
+  margin: 0 20px;
+}
+
+/* UNO PAGE */
+
+.uno--container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px; 
+  justify-content: center;
+  width:95%;
+  /* background-color: red; */
+  margin: 0 auto;
+}
+
+.uno--createBtn {
+  background-color: #97BC62;
+  font-size: 20px;
+  width: 90%;
+  height: 50%;
+  border: 0px;
+  border-radius: 10px;
+  color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.uno--createBtn:hover {
+  cursor: pointer;
+}
+
+.uno--joinBtn {
+  background-color: #2C5F2D;
+  font-size: 20px;
+  width: 90%;
+  height: 50%;
+  border: 0px;
+  border-radius: 10px;
+  color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.uno--joinBtn:hover {
+  cursor: pointer;
+}
+
+.uno--item1 {
+  background-color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0 0 20px;
+  border-radius: 10px;
+}
+
+.uno--item2 {
+  background-color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 20px 0 0;
+  border-radius: 10px;
+}
+
+.uno--item3 {
+  grid-column: 1 / -1;
+  background-color: white;
+  padding: 20px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  margin: 0 20px 20px 20px;
+  border-radius: 10px;
+}
+
+/* Join Room Page */
+
+.joinRoom--form {
+  display: flex;
+  padding: 20px;
+  align-items: left;
+  flex-direction: column;
+  background-color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  border-radius: 10px;
+  margin: 20px;
+  gap: 20px;
+  font-size: 20px;
+}
+
+.joinRoom--input {
+  border: 0px;
+  border-bottom: 1px solid black;
+  height: 20px;
+  font-size: 20px;
+}
+
+.joinRoom--btn {
+  background-color: #0096FF;  
+  width: 50%;
+  height: 40px;
+  font-size: 20px;
+  color: white;
+  border: 0px;
+  border-radius: 10px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+/* GAME PAGE */
+
+.containerAll {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  width: 90%;
+  margin: 20px auto
+  }
+
+.playerActionContainer {
+  grid-column: 1/-1;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.imageContainer {
+  position: relative;
+}
+
+.playerRole {
+  position: absolute;
+  top: 16%;
+  left: 50%;
+  transform: translate( -50%, -50% );
+}
