@@ -1,6 +1,6 @@
 # Multiplayer-Games
 
-This webpage is a collection of Multiplayer games. The used technologies were:
+This webpage is a collection of Multiplayer games. The following technologies were used:
 
 - Node.js/Socket.io, express (for the server)
 - React, React-Router, rc-table (dynamic rendering, concise routing)
