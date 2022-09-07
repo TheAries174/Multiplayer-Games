@@ -16,5 +16,5 @@ This webpage is a collection of Multiplayer games. The following technologies we
 | snake oil | All players get cards with random words. Create a product with these words and sell them to the buyer | https://boardgamegeek.com/boardgame/113289/snake-oil |
 | Mysterium | Dixit but better (people die) | https://boardgamegeek.com/boardgame/181304/mysterium |
 | hellapagos| Coop game with betrayal. The players are stranded on an island. Build a raft while still taking care of food and water | https://boardgamegeek.com/boardgame/224272/hellapagos | 
-| tempel des schreckens | easier version of secret hitler | https://boardgamegeek.com/boardgame/206915/tempel-des-schreckens |
+| tempel des schreckens | simpler version of secret hitler | https://boardgamegeek.com/boardgame/206915/tempel-des-schreckens |
 | diamant | quick, fun press-your-luck game | https://boardgamegeek.com/boardgame/15512/diamant |
