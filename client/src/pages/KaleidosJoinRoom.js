@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../socket";
 import JoinRoomPage from "../components/JoinRoomPage"
 
-function ChameleonJoinRoom() {
+const KaleidosJoinRoom = () => {
   const [gameId, setGameId] = useState("");
   const [playerName, setPlayerName] = useState("")
   
@@ -13,7 +13,7 @@ function ChameleonJoinRoom() {
   function submitData(event) {
     event.preventDefault(); // prevents error "Form submission canceled because the form is not connected"
     socket.emit("JoinRoom", [gameId, playerName])
-    navigate("/games/chameleon/createRoom")
+    navigate("/games/kaleidos/createRoom")
   }  
 
   return (
@@ -24,8 +24,7 @@ function ChameleonJoinRoom() {
         setPlayerName={setPlayerName}
         submitData={submitData}
     />
-
   )
 }
 
-export default ChameleonJoinRoom
+export default KaleidosJoinRoom

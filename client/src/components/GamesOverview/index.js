@@ -2,15 +2,16 @@ import React from 'react'
 import { ContainerAll, GameContainer, GameCover} from "./GamesOverview.styles" //GameTitle, GameDescription 
 import { useNavigate } from "react-router-dom";
 import chameleonLogo from "../../assets/images/chameleon-logo.png"
+import kaleidosLogo from "../../assets/images/kaleidos-logo.png"
 
 //Functional Component with summary of the game
-const GamesCard = () => {
+const GamesCard = (props) => {
   const navigate = useNavigate()
   return(
-    <div onClick={() => {navigate("/games/chameleon")}}>
-      <GameContainer style={{backgroundColor: "rgb(115, 188, 118)"}}>
-        <GameCover src={chameleonLogo} alt="chameleon-logo"/>
-    {/*   <GameTitle>Chameleon</GameTitle>       
+    <div onClick={() => {navigate(props.URL)}}>
+      <GameContainer style={props.style}>
+        <GameCover src={props.logo} alt={props.altText}/>
+    {/*   <GameTitle>Chameleon</GameTitle>       On hover
           <u>Description</u>
           <GameDescription>
             How well can you blend in and perhaps tell a little white lie? 
@@ -29,10 +30,18 @@ const GamesCard = () => {
 function GamesOverview() {
   return (
     <ContainerAll>
-        <GamesCard />
-      <GameContainer>
-        2
-      </GameContainer>
+      <GamesCard 
+        URL={"/games/chameleon"}
+        logo={chameleonLogo}
+        altText={"chameleon-logo"}
+        style={{backgroundColor: "rgb(115, 188, 118)"}}
+      />
+      <GamesCard 
+        URL={"/games/kaleidos"}
+        logo={kaleidosLogo}
+        altText={"kaleidos-logo"}
+        style={{backgroundColor: "rgb(91, 184, 212)"}}
+      />
       <GameContainer>
         3
       </GameContainer>
