@@ -6,9 +6,9 @@ This webpage is a collection of Multiplayer games. The used technologies were:
 - React, React-Router, rc-table (dynamic rendering, concise routing)
 - Styled Components (separation HTML, CSS for different Components)
 
-##soon^TM^ games list
+## soon^TM^ games list
 
-| games | description | link |
+| game | description | link |
 | ----------- | ----------- | ----------- |
 | snakesss | Trivia game, where the traitors know the answer and try to  persuade the majority to choose the wrong answer | https://boardgamegeek.com/boardgame/337389/snakesss |
 | so kleever | coop game similar to Code names | https://boardgamegeek.com/boardgame/329839/so-clover |
