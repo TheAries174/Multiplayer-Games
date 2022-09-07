@@ -3,16 +3,16 @@ import { BrowserRouter as Router, Routes, Route} from "react-router-dom"; //useN
 import Home from "./pages/Home";
 import ErrorPage from "./pages/ErrorPage";
 import Games from "./pages/Games";
-import Uno from "./pages/Uno";
 import Help from "./pages/Help";
-import UnoCreateRoom from "./pages/UnoCreateRoom";
-import UnoJoinRoom from "./pages/UnoJoinRoom";
 import Chameleon from "./pages/Chameleon";
 import ChameleonCreateRoom from "./pages/ChameleonCreateRoom";
 import ChameleonJoinRoom from "./pages/ChameleonJoinRoom";
-import ChameleonGame from "./pages/ChameleonGame.js" 
-import Navbar from "./components/Navbar"
-import { React } from "react" 
+import ChameleonGame from "./pages/ChameleonGame";
+import Kaleidos from "./pages/Kaleidos";
+import KaleidosCreateRoom from "./pages/KaleidosCreateRoom"; 
+import KaleidosJoinRoom from "./pages/KaleidosJoinRoom";
+import Navbar from "./components/Navbar";
+import { React } from "react" ;
 import  { socket, SocketContext } from "./socket";
 
 function App() {
@@ -23,13 +23,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />}/>
         <Route path="/games/" element={<Games />}/>
-        <Route path="/games/uno" element={<Uno />}/>
-        <Route path="/games/uno/createRoom" element={<UnoCreateRoom />}/>
-        <Route path="/games/uno/joinRoom" element={<UnoJoinRoom />}/>
         <Route path="/games/chameleon" element={<Chameleon />} />
         <Route path="/games/chameleon/createRoom" element={<ChameleonCreateRoom />} />
         <Route path="/games/chameleon/joinRoom" element={<ChameleonJoinRoom  />} />
-        <Route path="games/chameleon/room:gameId/:userName" element={<ChameleonGame />} />
+        <Route path="/games/chameleon/room:gameId/:userName" element={<ChameleonGame />} />
+        <Route path="/games/kaleidos" element={<Kaleidos />} />
+        <Route path="/games/kaleidos/createRoom" element={<KaleidosCreateRoom />} />
+        <Route path="/games/kaleidos/joinRoom" element={<KaleidosJoinRoom />} />
         <Route path="/help" element={<Help/>}/>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

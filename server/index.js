@@ -27,15 +27,11 @@ io.on("connection", (socket) => {
 		console.log("User disconnected", socket.id)
 	}),
 
-	socket.on("unoCreateRoom", () => {
-//		console.log(`User ${userName} created a room`)
-		
-	})
 // Change param with spread operator for better readability
-	socket.on("chameleonCreateRoom", (param) => {
+	socket.on("createRoom", (param) => {
 		console.log(`${param.userName}/ ${socket.id} created a room ${param.gameId}`)
 
-		function createRoom(userId, userName, gameId) {
+		function createRoomData(userId, userName, gameId) {
 			let roomData = {
 				gameId: gameId,
 				user1: 
@@ -47,13 +43,13 @@ io.on("connection", (socket) => {
 		return roomData
 		}
 
-		let roomData = createRoom(socket.id, param.userName, param.gameId)
+		let roomData = createRoomData(socket.id, param.userName, param.gameId)
 		console.log(roomData)
 		socket.emit("create", roomData)
 		socket.join(param.gameId)
 	})
 
-	socket.on("chameleonJoinRoom", ([gameId, userName]) => {
+	socket.on("JoinRoom", ([gameId, userName]) => {
 		console.log(`${userName}/ ${socket.id} joined room ${gameId}`)
 		socket.join(gameId)
 		socket.to(gameId).emit("requestRoomData", {

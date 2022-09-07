@@ -1,5 +1,6 @@
 import React, {useRef, useEffect} from 'react'
 import { useContainerDimensions } from "../../util/useContainerDimension"
+import { ImageContainer, PlayerRoleText, CoveringCanvas } from "./ChameleonImageContainer.styles"
 
 const ChameleonImageContainer = (props) => {
 
@@ -50,17 +51,17 @@ const ChameleonImageContainer = (props) => {
   } 
 
   return (
-    <div className="imageContainer" ref={componentRef}>
+    <ImageContainer ref={componentRef}>
       <img 
         src={require(`../../assets/chameleon/${props.topic.name}.png`)}
         alt="topic"
         width="100%" 
       />
-      <div className="playerRole">
+      <PlayerRoleText>
         {props.currentUser.userName === props.chameleonPlayer ? "You are the Chameleon!" : "You are NOT the Chameleon!"}
-      </div>
-      <canvas className="coveringCanvas" ref={canvasRef}></canvas>
-    </div>
+      </PlayerRoleText>
+      <CoveringCanvas ref={canvasRef}></CoveringCanvas>
+    </ImageContainer>
   )
 }
 

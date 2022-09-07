@@ -2,21 +2,21 @@ import React from 'react';
 import PregameLobby from "../components/PregameLobby"
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../socket";
- 
-const Chameleon = () => {
+
+const Kaleidos = () => {
   const socket = React.useContext(SocketContext); 
   const navigate = useNavigate()
   
   const createRoom = () => {
     let userName = window.prompt("Please enter your username!")
-    navigate("/games/chameleon/createRoom")
+    navigate("/games/kaleidos/createRoom")
     socket.emit("createRoom", {
       userName: userName, 
       gameId: makeId(4)
     })
   }
   const joinRoom = () => {
-    navigate("/games/chameleon/joinRoom")
+    navigate("/games/kaleidos/joinRoom")
   }
 
   function makeId(length) {
@@ -29,10 +29,12 @@ const Chameleon = () => {
     return result
   }
 
-  const description = <div><strong>Chameleon</strong> is a bluffing deduction game for everyone.
-  Each round involves two missions, depending on whether you’re the Chameleon or not.
-  Mission 1: You are the Chameleon. No one knows your identity except you. Your mission is to blend in, not get caught and to work out the Secret Word.
-  Mission 2: You are not the Chameleon. Try to work out who the Chameleon is without giving away the Secret Word.
+  const description = <div>The game <strong>Kaleidos</strong> comes with several paintings, each depicting a scene packed (to greater and lesser extents) 
+  with various objects. Every round a random letter is chosen and everyone gets 120 seconds to write down as many things beginning with that letter as they can find 
+  in the scene. Once time has expired, players read through the lists.
+  <br/> <br/>
+  Any object on multiple lists scores one point for those who wrote it. Any item unique to a single 
+  list scores three points. When all lists have been scored everyone advances to the next scene and a new letter is chosen. The high score after all 12 scenes wins.
   </div>
 
     return (
@@ -44,4 +46,4 @@ const Chameleon = () => {
     )
 }
 
-export default Chameleon
+export default Kaleidos
