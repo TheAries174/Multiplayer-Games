@@ -6,7 +6,7 @@ This webpage is a collection of Multiplayer games. The used technologies were:
 - React, React-Router, rc-table (dynamic rendering, concise routing)
 - Styled Components (separation HTML, CSS for different Components)
 
-## soon^TM^ games list
+## soon™️ games list
 
 | game | description | link |
 | ----------- | ----------- | ----------- |
