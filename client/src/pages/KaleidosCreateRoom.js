@@ -65,13 +65,21 @@ const KaleidosCreateRoom = () => {
       socket.off("kaleidosReceivePlayers")
     }
   })
+
+  function startGame(){
+    if (isGameMaster) {
+      const urlLink = `/games/kaleidos/room${gameId}/${users[0].userName}`
+      const urlState = {state: {isGameMaster: isGameMaster, users: users, data: {objectImage: "", letter: "" } }}
+      navigate(urlLink, urlState)
+    }
+  }
   
   return (
     <RoomOneTeam 
     gameId={gameId}
     users={users}
     isGameMaster={isGameMaster}
-    gameName={"kaleidos"}
+    startGame={startGame}
   />
   )
 }

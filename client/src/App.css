@@ -22,3 +22,40 @@ input, label, select {
   width: 90%;
   margin: 20px auto
   }
+
+/* KALEIDOS GAME PAGE */
+
+.containerAll {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  width: 90%;
+  margin: 20px auto;
+}
+
+.playerContainer {
+  background-color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px;
+  flex-direction: column;
+}
+
+.objectImageContainer {
+  grid-column: 2 / -1;
+}
+
+.objectImage {
+  border-radius: 20px;
+  width: 100%;
+}
+
+.playerActionContainer {
+  display:flex;
+  flex-direction: row;
+  margin-bottom: 30px;
+  width: 80%
+}

@@ -66,13 +66,20 @@ const ChameleonCreateRoom = () => {
     }
   })
   
- 
+  function startGame(){
+    if (isGameMaster) {
+      const urlLink = `/games/chameleon/room${gameId}/${users[0].userName}`
+      const urlState = {state: {isGameMaster: isGameMaster, users: users, data: {topic: {name:"", column:"", row:""}, chameleonPlayer: ""} }}
+      navigate(urlLink, urlState)
+    }
+  }
+
   return (
   <RoomOneTeam 
     gameId={gameId}
     users={users}
     isGameMaster={isGameMaster}
-    gameName={"chameleon"}
+    startGame={startGame}
   />
 )
 }
