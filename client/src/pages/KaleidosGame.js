@@ -47,11 +47,18 @@ const KaleidosGame = () => {
   //initialize
 
   const initWordList = []
+  const initScore = []
+
   for (let i=0; i < users.length; i++) {
     initWordList.push({
       userName: users[i].userName,
       words: [],
-      open: "closed",
+      open: false,
+    })
+
+    initScore.push({
+      userName: users[i].userName,
+      score: 0
     })
   }
   const [wordList, setWordList] = useState(initWordList)
@@ -60,6 +67,8 @@ const KaleidosGame = () => {
   const [letter, setLetter] = useState(randomLetter())
   const [blur, setBlur] = useState("15px")
   const [phase, setPhase] = useState("phase 1")
+  const [score, setScore] = useState(initScore)
+  const [round, setRound] = useState(1)
   const timeRef = useRef()
 
   function submitHandler() {
@@ -101,8 +110,38 @@ const KaleidosGame = () => {
   let wordArray = wordList.find((obj) => obj.userName === currentUser.userName) //maybe change because whole page gets rerendered?
 
   function toggleHandler(event) { 
-    console.log(event.target)
+    setWordList((oldWordList) => {
+      const tempWordList = [...oldWordList]
+      const newWordList = tempWordList.map((obj) => {
+        if (obj.userName === event.target.id) {
+          return({...obj, open: !obj.open})
+        } else return obj
+      })
+      return newWordList
+    })
   }
+
+  function wordClickHandler(event) {
+    setWordList((oldWordList) => {
+      const tempWordList = [...oldWordList]
+      const newWordList = tempWordList.map((obj) => {
+          return({...obj, words: obj.words.filter((word) => word !== event.target.textContent)})
+      })
+      return newWordList
+    })
+  }
+
+  function nextRoundHandler(){
+    //reset wordList, keep score
+    setRound(round+1)
+    round<12 ? setPhase("phase 1") : setPhase("phase 3")
+  }
+
+ /*  useEffect(() => {
+    setScore((oldScore) => {
+
+    })
+  }, [wordList]) */
 
   return (
     <div className="containerAll">
@@ -152,14 +191,18 @@ const KaleidosGame = () => {
       <>
         <div className="playerContainer2">
           <PlayerAndWordContainer playerNumber={users.length}>
-            <pre></pre> 
+            <button onClick={nextRoundHandler}>Next Round</button>
             {
               wordList.map((obj) => {
                 return(
-                  <details open={obj.open} onToggle={(event) => toggleHandler(event)}>
+                  <details 
+                    open={obj.open} 
+                    onToggle={(event) => toggleHandler(event)}
+                    id={obj.userName}
+                  >
                     <summary><u>{obj.userName}</u></summary>
                     <ul>
-                      {obj.words.map((word) => <li>{word}</li>)}
+                      {obj.words.map((word) => <li onClick={(event) => wordClickHandler(event)}>{word}</li>)}
                     </ul>
                   </details>
                 )
@@ -169,8 +212,8 @@ const KaleidosGame = () => {
             {
               wordList.map((obj) => {
                 return(
-                  <div>{obj.words.length}</div>
-                )
+                  <div>{obj.open ? obj.words.length : "***"}</div>
+                ) 
               })
             }
           </PlayerAndWordContainer>
