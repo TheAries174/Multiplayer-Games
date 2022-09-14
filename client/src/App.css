@@ -87,3 +87,7 @@ input, label, select {
   display: flex;
   justify-content: space-around;
 }
+
+.nextRound-btn {
+  height: 20px;
+}

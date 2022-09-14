@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import { SocketContext } from "../socket"
 import { useLocation, useParams } from "react-router-dom";
-import objImage from "../assets/kaleidos/objImage1.jpg"
 import randomizeIcon from "../assets/images/change-icon.png"
 import styled from "styled-components"
 
@@ -46,43 +45,45 @@ const KaleidosGame = () => {
 
   //initialize
 
-  const initWordList = []
-  const initScore = []
+  const initUserData = []
 
   for (let i=0; i < users.length; i++) {
-    initWordList.push({
+    initUserData.push({
       userName: users[i].userName,
       words: [],
       open: false,
-    })
-
-    initScore.push({
-      userName: users[i].userName,
-      score: 0
+      score: 0,
     })
   }
-  const [wordList, setWordList] = useState(initWordList)
+
+  const [userData, setUserData] = useState(initUserData)
   const [playerWord, setPlayerWord] = useState("")
   const [counter, setCounter] = useState(10)
   const [letter, setLetter] = useState(randomLetter())
+  const [objImage, setObjImage] = useState(randomObjImage())
   const [blur, setBlur] = useState("15px")
   const [phase, setPhase] = useState("phase 1")
-  const [score, setScore] = useState(initScore)
   const [round, setRound] = useState(1)
   const timeRef = useRef()
 
   function submitHandler() {
-    setWordList((oldWordList) => {
-      const tempWordList = [...oldWordList]
-      const newWordList = tempWordList.map((obj) => {
+    setUserData((oldUserData) => {
+      const tempUserData = [...oldUserData]
+      const newUserData = tempUserData.map((obj) => {
         if (obj.userName === currentUser.userName) {
-          return {...obj, words: [...obj.words, playerWord]}
-        } else {return obj}
+          return {...obj, words: [...obj.words, playerWord], score: obj.score+1}
+        } else return obj
       })
-      return newWordList
+      return newUserData
     })
-    console.log(wordList)
+    console.log(userData)
     setPlayerWord("")
+  }
+
+  function randomObjImage() {
+    //there are 24 objImages
+    const randNum = Math.floor(Math.random() * 24) + 1
+    return randNum
   }
 
   function randomLetter() {
@@ -91,9 +92,13 @@ const KaleidosGame = () => {
       return result
   }
 
+  function randomizeLetterHandler () {
+    setLetter(randomLetter())
+  }
+
   function startRound() {
     setBlur("0px")
-    setInterval(() => {
+    const timer = setInterval(() => {
       setCounter((prevCounter) => {
         if (prevCounter > 0) {
           timeRef.current = prevCounter -1
@@ -103,45 +108,60 @@ const KaleidosGame = () => {
       })
       if (timeRef.current === 0) {
         setPhase("phase 2")
+        clearInterval(timer)
       }
     }, 1000)
   }
 
-  let wordArray = wordList.find((obj) => obj.userName === currentUser.userName) //maybe change because whole page gets rerendered?
+  let wordArray = userData.find((obj) => obj.userName === currentUser.userName) //maybe change because whole page gets rerendered?
 
   function toggleHandler(event) { 
-    setWordList((oldWordList) => {
-      const tempWordList = [...oldWordList]
-      const newWordList = tempWordList.map((obj) => {
+    setUserData((oldUserData) => {
+      const tempUserData = [...oldUserData]
+      const newUserData = tempUserData.map((obj) => {
         if (obj.userName === event.target.id) {
           return({...obj, open: !obj.open})
         } else return obj
       })
-      return newWordList
+      return newUserData
     })
   }
 
   function wordClickHandler(event) {
-    setWordList((oldWordList) => {
-      const tempWordList = [...oldWordList]
-      const newWordList = tempWordList.map((obj) => {
-          return({...obj, words: obj.words.filter((word) => word !== event.target.textContent)})
+    setUserData((oldUserData) => {
+      const tempUserData = [...oldUserData]
+      const newUserData = tempUserData.map((obj) => {
+        if(obj.userName === event.target.id) {
+          return({
+            ...obj, 
+            words: obj.words.filter((word) => word !== event.target.textContent), 
+            score: obj.score-1
+          })} else return obj
       })
-      return newWordList
+      return newUserData
     })
   }
 
   function nextRoundHandler(){
-    //reset wordList, keep score
+    //reset userData, keep score
     setRound(round+1)
+    setCounter(60)
+    setLetter(randomLetter)
+    setUserData((oldUserData) => {
+      const tempUserData = [...oldUserData]
+      const newUserData = tempUserData.map((obj) => {
+        return {
+          ...obj,
+          open: false,
+          words: []
+        }
+      })
+      return newUserData
+    })
+    setObjImage(randomObjImage())
+    setBlur("15px")
     round<12 ? setPhase("phase 1") : setPhase("phase 3")
   }
-
- /*  useEffect(() => {
-    setScore((oldScore) => {
-
-    })
-  }, [wordList]) */
 
   return (
     <div className="containerAll">
@@ -156,7 +176,14 @@ const KaleidosGame = () => {
             }
           </ul>
           <div>
-            <div>Letter: {letter} </div>
+            <div>Letter: {letter}   
+              <img 
+                src={randomizeIcon}
+                alt="randomize Icon"
+                onClick={randomizeLetterHandler}
+                width="15px"
+              />
+            </div>
             <div>Time:{counter} s</div>
             <button onClick={startRound}>Start Round</button>
           </div>
@@ -178,7 +205,7 @@ const KaleidosGame = () => {
       </div>
       <div className="objectImageContainer" >
         <BlurredImage
-          src={objImage} 
+          src={require(`../assets/kaleidos/objImage${objImage}.jpg`)} 
           alt="painting with many objects"
           blur={blur}
         /> 
@@ -191,9 +218,9 @@ const KaleidosGame = () => {
       <>
         <div className="playerContainer2">
           <PlayerAndWordContainer playerNumber={users.length}>
-            <button onClick={nextRoundHandler}>Next Round</button>
+            <button onClick={nextRoundHandler} className="nextRound-btn">Next Round</button>
             {
-              wordList.map((obj) => {
+              userData.map((obj) => {
                 return(
                   <details 
                     open={obj.open} 
@@ -202,7 +229,14 @@ const KaleidosGame = () => {
                   >
                     <summary><u>{obj.userName}</u></summary>
                     <ul>
-                      {obj.words.map((word) => <li onClick={(event) => wordClickHandler(event)}>{word}</li>)}
+                      {obj.words.map((word) => 
+                        <li 
+                          onClick={(event) => wordClickHandler(event)}
+                          id={obj.userName}
+                          key={word}
+                        >{word}
+                        </li>
+                      )}
                     </ul>
                   </details>
                 )
@@ -210,9 +244,9 @@ const KaleidosGame = () => {
             }
             <div>score</div>
             {
-              wordList.map((obj) => {
+              userData.map((obj) => {
                 return(
-                  <div>{obj.open ? obj.words.length : "***"}</div>
+                  <div>{obj.open ? obj.score : "***"}</div>
                 ) 
               })
             }
@@ -220,7 +254,7 @@ const KaleidosGame = () => {
         </div>
       <div className="objectImageContainer2" >
         <BlurredImage
-          src={objImage} 
+          src={require(`../assets/kaleidos/objImage${objImage}.jpg`)} 
           alt="painting with many objects"
           blur={blur}
         /> 
