@@ -3,7 +3,7 @@
 This webpage is a collection of Multiplayer games. The following technologies were used:
 
 - Node.js/Socket.io, express (for the server)
-- React, React-Router, rc-table (dynamic rendering, concise routing)
+- React, React-Router, rc-table (dynamic rendering, routing)
 - Styled Components (separation HTML, CSS for different Components)
 
 ## soon™️ games list
