@@ -94,4 +94,16 @@ io.on("connection", (socket) => {
 		console.log(data.topic)
 		io.to(data.gameId).emit("chameleonNextRound", (data))
 	})
+
+	//KALEIDOS
+	socket.on("kaleidosInitPlayers", (data) => {
+		console.log(`All the Players joined room ${data.gameId}`)
+		console.log(`The Letter is ${data.letter} and the objImage is ${data.objImage}`)
+		io.to(data.gameId).emit("kaleidosReceivePlayers", data)
+	})
+
+	socket.on("kaleidosUpdateLetterServer", (data) => {
+		console.log(`The new leter is ${data.letter}`)
+		socket.broadcast.to(data.gameId).emit("kaleidosUpdateLetter", data.letter)
+	})
 })

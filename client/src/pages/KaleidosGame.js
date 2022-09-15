@@ -25,7 +25,8 @@ const KaleidosGame = () => {
   const { gameId } = useParams()
   const currentObjImage = useRef()
   const currentLetter =  useRef()
-/*   useEffect(() => {
+  
+  useEffect(() => {
     if(isGameMaster) {
       socket.emit("kaleidosInitPlayers", {
         users: users,
@@ -35,13 +36,18 @@ const KaleidosGame = () => {
       })
     }
 
-    //socket Update ObjImage
+    socket.on("kaleidosUpdateLetter", (data) => {
+      console.log(`The new Topic is ${data.letter}`)
+      setLetter(data.letter)
+    })
+
     //socket update all words after the first phase
     
     return () => {
       socket.off("kaleidosInitPlayers")
+      socket.off("kaleidosUpdateLetter")
     }
-  }, []) */
+  }, [])
 
   //initialize
 
@@ -59,8 +65,8 @@ const KaleidosGame = () => {
   const [userData, setUserData] = useState(initUserData)
   const [playerWord, setPlayerWord] = useState("")
   const [counter, setCounter] = useState(10)
-  const [letter, setLetter] = useState(randomLetter())
-  const [objImage, setObjImage] = useState(randomObjImage())
+  const [letter, setLetter] = useState(isGameMaster ? randomLetter() : data.letter)
+  const [objImage, setObjImage] = useState(isGameMaster ? randomObjImage() : data.objImage )
   const [blur, setBlur] = useState("15px")
   const [phase, setPhase] = useState("phase 1")
   const [round, setRound] = useState(1)
@@ -83,17 +89,25 @@ const KaleidosGame = () => {
   function randomObjImage() {
     //there are 24 objImages
     const randNum = Math.floor(Math.random() * 24) + 1
-    return randNum
+    currentObjImage.current = `objImage${randNum}` 
+    return currentObjImage.current
   }
 
   function randomLetter() {
       const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const result = characters.charAt(Math.floor(Math.random() * characters.length));
-      return result
+      currentLetter.current = characters.charAt(Math.floor(Math.random() * characters.length));
+      return currentLetter.current
   }
 
   function randomizeLetterHandler () {
-    setLetter(randomLetter())
+    if (isGameMaster){
+      setLetter(randomLetter())
+      socket.emit("kaleidosUpdateLetterServer", {
+        gameId: gameId,
+        letter: currentLetter.current
+      })
+    }
+
   }
 
   function startRound() {
@@ -205,7 +219,7 @@ const KaleidosGame = () => {
       </div>
       <div className="objectImageContainer" >
         <BlurredImage
-          src={require(`../assets/kaleidos/objImage${objImage}.jpg`)} 
+          src={require(`../assets/kaleidos/${objImage}.jpg`)} 
           alt="painting with many objects"
           blur={blur}
         /> 
@@ -254,7 +268,7 @@ const KaleidosGame = () => {
         </div>
       <div className="objectImageContainer2" >
         <BlurredImage
-          src={require(`../assets/kaleidos/objImage${objImage}.jpg`)} 
+          src={require(`../assets/kaleidos/${objImage}.jpg`)} 
           alt="painting with many objects"
           blur={blur}
         /> 
