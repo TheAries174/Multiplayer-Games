@@ -64,6 +64,8 @@ input, label, select {
   width: 100%
 }
 
+/* PHASE 2 */
+
 .playerContainer2 {
   background-color: white;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
@@ -90,4 +92,16 @@ input, label, select {
 
 .nextRound-btn {
   height: 20px;
+}
+
+/* PHASE 3 */
+
+.playerContainer3 {
+  background-color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  border-radius: 20px;
+  grid-column: 1 / -1;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr
 }

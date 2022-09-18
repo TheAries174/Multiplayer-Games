@@ -108,12 +108,13 @@ io.on("connection", (socket) => {
 	})
 
 	socket.on("kaleidosStartRoundServer", (gameId) => {
+		console.log("The round is starting")
 		io.to(gameId).emit("kaleidosStartRound")
 	})
 
 	socket.on("kaleidosUpdateGameStateServer", (data) => {
-		console.log(`the User ${data.currentUser.userName} has send his data ${JSON.stringify(data.userData)}`)
-		socket.broadcast.to(data.gameId).emit("kaleidosUpdateGameState", data)
+		console.log(`the User ${data.currentUser.userName} has send his data `)
+		io.to(data.gameId).emit("kaleidosUpdateGameState", data)
 	})
 
 	socket.on("kaleidosDeleteWordsServer", (data) => {

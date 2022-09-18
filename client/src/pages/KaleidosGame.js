@@ -28,6 +28,8 @@ const KaleidosGame = () => {
   const currentUserData = useRef()
   const currentRound = useRef()
   const timeRef = useRef()
+  const allWordsRef = useRef([])
+  const duplicateWordsRef = useRef() 
   
   useEffect(() => {
     if(isGameMaster) {
@@ -60,8 +62,8 @@ const KaleidosGame = () => {
             userData: currentUserData.current,
             currentUser: currentUser
           })
-          setPhase("phase 2")
           clearInterval(timer)
+          setPhase("phase 2")
         }
       }, 1000)
     })
@@ -73,13 +75,44 @@ const KaleidosGame = () => {
         const newWordList = data.userData.find((obj) => {
           return obj.userName === data.currentUser.userName
         })
-        const newUserData = tempUserData.map((obj) => {
+        let newUserData = tempUserData.map((obj) => {
           if (obj.userName === data.currentUser.userName) {
-            return({...obj, words: newWordList.words, score: newWordList.score})
+            return({...obj, words: newWordList.words, score: newWordList.score, isUpdated: true})
           } else return obj
         })
-      currentUserData.current = newUserData
-      return newUserData
+
+        //if every wordList is updated -> update score
+        if (newUserData.every((obj) => obj.isUpdated === true )) {
+          //add all words to one array, sort them alphabetically and lowercase them
+          newUserData = newUserData.map((obj) => {
+            obj.words.sort()
+            obj.words.map( (word) => word.toLowerCase() )
+            allWordsRef.current = [...allWordsRef.current, ...obj.words]
+            return obj
+          })
+          console.log(allWordsRef.current)
+          //find duplicate elements and save them in one array
+          duplicateWordsRef.current = allWordsRef.current.filter((item, index) => index !== allWordsRef.current.indexOf(item))
+          console.log(duplicateWordsRef.current)
+          //compare words array with uniqueWord array and change score (3points if unique otherwise 1)
+          newUserData = newUserData.map((obj) => {
+            let isDuplicateWord
+            for (const word of obj.words){
+              isDuplicateWord = false
+              for (const duplicateWord of duplicateWordsRef.current){
+                if (word === duplicateWord) {
+                  isDuplicateWord = true
+                }
+              }
+              obj = {...obj, score: obj.score + (isDuplicateWord ? 1 : 3)}
+              console.log(`Score: ${obj.score} + ${(isDuplicateWord ? 1 : 3)}, ${isDuplicateWord}`)
+            }
+            return obj
+          })
+          currentUserData.current = newUserData
+          console.log("score was updated")
+        }
+        return newUserData
       })
     })
 
@@ -93,11 +126,17 @@ const KaleidosGame = () => {
       setObjImage(data.objImage)
       setRound((oldRound) => {
         currentRound.current = oldRound + 1
+        if (currentRound.current <3) {
+          setPhase("phase 1")
+        } else {
+          setPhase("phase 3")
+          editAllScores()
+        } 
         return currentRound.current
       })
       //Reset Data
       setCounter(() => {
-        timeRef.current = 60
+        timeRef.current = 10
         return timeRef.current
       })
       setUserData((oldUserData) => {
@@ -106,15 +145,16 @@ const KaleidosGame = () => {
           return {
             ...obj,
             open: false,
-            words: []
+            words: [],
+            isUpdated: false
           }
         })
         currentUserData.current = newUserData
         return newUserData
       })
       setBlur("15px")
-      currentRound.current <12 ? setPhase("phase 1") : setPhase("phase 3")
-      console.log(currentRound.current)
+      allWordsRef.current = []
+      duplicateWordsRef.current = []
     })
     return () => {
       socket.off("kaleidosInitPlayers")
@@ -134,6 +174,7 @@ const KaleidosGame = () => {
       userName: users[i].userName,
       words: [],
       open: false,
+      isUpdated: false,
       score: 0,
     })
   }
@@ -146,6 +187,7 @@ const KaleidosGame = () => {
   const [blur, setBlur] = useState("15px")
   const [phase, setPhase] = useState("phase 1")
   const [round, setRound] = useState(1)
+  const [allScores, setAllScores] = useState([])
 
 
   function submitHandler() {
@@ -154,7 +196,7 @@ const KaleidosGame = () => {
         const tempUserData = [...oldUserData]
         const newUserData = tempUserData.map((obj) => {
           if (obj.userName === currentUser.userName) {
-            return {...obj, words: [...obj.words, playerWord], score: obj.score+1}
+            return {...obj, words: [...obj.words, playerWord]}
           } else return obj
         })
         currentUserData.current = newUserData
@@ -212,20 +254,27 @@ const KaleidosGame = () => {
     if(isGameMaster) {
       setUserData((oldUserData) => {
         const tempUserData = [...oldUserData]
+        console.log(tempUserData)
         const newUserData = tempUserData.map((obj) => {
           if(obj.userName === event.target.id) {
+            let isDuplicateWord=false
+            for (const duplicateWord of duplicateWordsRef.current) {
+              if(event.target.textContent===duplicateWord) {
+                isDuplicateWord = true
+              }
+            }
             return({
               ...obj, 
               words: obj.words.filter((word) => word !== event.target.textContent), 
-              score: obj.score-1
+              score: obj.score - (isDuplicateWord ? 1 : 3)
             })
           } else return obj
         })
-      currentUserData.current = newUserData
-      socket.emit("kaleidosDeleteWordsServer", {
-        gameId: gameId,
-        userData: currentUserData.current
-      })
+        currentUserData.current = newUserData
+        socket.emit("kaleidosDeleteWordsServer", {
+          gameId: gameId,
+          userData: currentUserData.current
+        })
       return newUserData
       })
     }
@@ -238,6 +287,58 @@ const KaleidosGame = () => {
       gameId: gameId,
       letter: currentLetter.current,
       objImage: currentObjImage.current
+    })
+  }
+
+  
+/*   function updateScore() {
+    setUserData((oldUserData) => {
+      const tempUserData = [...oldUserData]
+      let allWords = []
+      //add all words to one array, sort them alphabetically and lowercase them
+      let newUserData = tempUserData.map((obj) => {
+        obj.words.sort()
+        obj.words.map( (word) => word.toLowerCase() )
+        allWords = [...allWords, ...obj.words]
+        return obj
+      })
+      console.log(allWords)
+      //find duplicate elements and save them in one array
+      const duplicateWords = allWords.filter((item, index) => index !== allWords.indexOf(item))
+      console.log(duplicateWords)
+      //compare words array with uniqueWord array and change score (3points if unique otherwise 1)
+      newUserData = newUserData.map((obj) => {
+        let temp = {...obj}
+        console.log(temp)
+        let isDuplicateWord
+        for (const word of obj.words){
+          isDuplicateWord = false
+          for (const duplicateWord of duplicateWords){
+            if (word === duplicateWord) {
+              isDuplicateWord = true
+            }
+          }
+          temp = {...temp, score: obj.score + (isDuplicateWord ? 1 : 3)}
+        }
+        return temp
+      })
+      currentUserData.current = newUserData
+      return newUserData
+    })
+  } */
+
+  function editAllScores() {
+    setAllScores(() => {
+      const tempAllScores = currentUserData.current.map((obj) => {
+        return {
+          userName: obj.userName,
+          score: obj.score,
+        }
+      })
+       //sort allScores from biggest to smallest
+      tempAllScores.sort((a, b) => b.score - a.score)
+      console.log(tempAllScores)
+      return tempAllScores
     })
   }
 
@@ -254,6 +355,7 @@ const KaleidosGame = () => {
             }
           </ul>
           <div>
+            <div>Runde: {round}</div>
             <div>Letter: {letter}   
               <img 
                 src={randomizeIcon}
@@ -337,6 +439,24 @@ const KaleidosGame = () => {
           blur={blur}
         /> 
       </div>
+      </>
+    }
+    {
+      phase === "phase 3" && 
+      <>
+        <div className="playerContainer3">
+            {
+              allScores.map((obj, index) => {
+                return(
+                  <>
+                    <div>{index+1}.</div>  
+                    <div>{obj.userName}</div>
+                    <div>{obj.score} Punkte</div>
+                  </>
+                )
+              })
+            }
+        </div>
       </>
     }
     </div>
