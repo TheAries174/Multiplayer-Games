@@ -25,7 +25,6 @@ const KaleidosGame = () => {
   const { gameId } = useParams()
   const currentObjImage = useRef()
   const currentLetter =  useRef()
-  const currentUserData = useRef()
   const currentRound = useRef()
   const timeRef = useRef()
   const allWordsRef = useRef([])
@@ -178,6 +177,8 @@ const KaleidosGame = () => {
       score: 0,
     })
   }
+  
+  const currentUserData = useRef(initUserData)
 
   const [userData, setUserData] = useState(initUserData)
   const [playerWord, setPlayerWord] = useState("")
