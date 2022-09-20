@@ -2,21 +2,12 @@ import React, {useState, useEffect, useRef} from 'react'
 import { SocketContext } from "../socket"
 import { useLocation, useParams } from "react-router-dom";
 import randomizeIcon from "../assets/images/change-icon.png"
-import styled from "styled-components"
+import PhaseOnePlayerContainer from '../components/kaleidos/phaseOnePlayerContainer';
+import PhaseOneObjectImageContainer from '../components/kaleidos/PhaseOneObjectImageContainer';
+import PhaseTwoPlayerContainer from '../components/kaleidos/PhaseTwoPlayerContainer';
+import PhaseTwoObjImage from '../components/kaleidos/PhaseTwoObjImage';
+import PhaseThreePlayerContainer from '../components/kaleidos/PhaseThreePlayerContainer';
 
-const BlurredImage = styled.img`
-  border-radius: 20px;
-  width: 100%;
-  filter: blur(${props => props.blur})
-`
-const PlayerAndWordContainer = styled.div`
-  display: grid;
-  grid-template-columns: auto auto auto;
-  width: 100%;
-  height: 100%;
-  justify-content: space-around;
-  align-content: space-between
-`
 const KaleidosGame = () => {
   const socket = React.useContext(SocketContext);
   const location = useLocation()
@@ -46,7 +37,7 @@ const KaleidosGame = () => {
     })
 
     socket.on("kaleidosStartRound", () => {
-      setBlur("0px")
+      setBlur(false)
       const timer = setInterval(() => {
         setCounter((prevCounter) => {
           if (prevCounter > 0) {
@@ -151,7 +142,7 @@ const KaleidosGame = () => {
         currentUserData.current = newUserData
         return newUserData
       })
-      setBlur("15px")
+      setBlur(true)
       allWordsRef.current = []
       duplicateWordsRef.current = []
     })
@@ -185,7 +176,7 @@ const KaleidosGame = () => {
   const [counter, setCounter] = useState(10)
   const [letter, setLetter] = useState(isGameMaster ? randomLetter() : data.letter)
   const [objImage, setObjImage] = useState(isGameMaster ? randomObjImage() : data.objImage )
-  const [blur, setBlur] = useState("15px")
+  const [blur, setBlur] = useState(true)
   const [phase, setPhase] = useState("phase 1")
   const [round, setRound] = useState(1)
   const [allScores, setAllScores] = useState([])
@@ -291,43 +282,6 @@ const KaleidosGame = () => {
     })
   }
 
-  
-/*   function updateScore() {
-    setUserData((oldUserData) => {
-      const tempUserData = [...oldUserData]
-      let allWords = []
-      //add all words to one array, sort them alphabetically and lowercase them
-      let newUserData = tempUserData.map((obj) => {
-        obj.words.sort()
-        obj.words.map( (word) => word.toLowerCase() )
-        allWords = [...allWords, ...obj.words]
-        return obj
-      })
-      console.log(allWords)
-      //find duplicate elements and save them in one array
-      const duplicateWords = allWords.filter((item, index) => index !== allWords.indexOf(item))
-      console.log(duplicateWords)
-      //compare words array with uniqueWord array and change score (3points if unique otherwise 1)
-      newUserData = newUserData.map((obj) => {
-        let temp = {...obj}
-        console.log(temp)
-        let isDuplicateWord
-        for (const word of obj.words){
-          isDuplicateWord = false
-          for (const duplicateWord of duplicateWords){
-            if (word === duplicateWord) {
-              isDuplicateWord = true
-            }
-          }
-          temp = {...temp, score: obj.score + (isDuplicateWord ? 1 : 3)}
-        }
-        return temp
-      })
-      currentUserData.current = newUserData
-      return newUserData
-    })
-  } */
-
   function editAllScores() {
     setAllScores(() => {
       const tempAllScores = currentUserData.current.map((obj) => {
@@ -348,116 +302,46 @@ const KaleidosGame = () => {
     {
       phase === "phase 1" &&
       <>
-      <div className="playerContainer">
-        <div className="wordsAndCounter">
-          <ul>Wörterliste
-            {
-              wordArray.words.map((word) => <li key={word}>{word}</li> )
-            }
-          </ul>
-          <div>
-            <div>Runde: {round}</div>
-            <div>Letter: {letter}   
-              <img 
-                src={randomizeIcon}
-                alt="randomize Icon"
-                onClick={randomizeLetterHandler}
-                width="15px"
-              />
-            </div>
-            <div>Time:{counter} s</div>
-            <button onClick={startRound}>Start Round</button>
-          </div>
-        </div>
-        <div className="playerActionContainer">
-          <input 
-            type="text"
-            placeholder="Type your word"
-            value={playerWord}
-            onChange={(event) => setPlayerWord(event.target.value)}
-            onKeyDown={(event) => {
-              if(event.key==="Enter") {
-                submitHandler()
-              }
-            }}
-            />
-          <button onClick={submitHandler}>Submit</button>
-        </div>
-      </div>
-      <div className="objectImageContainer" >
-        <BlurredImage
-          src={require(`../assets/kaleidos/${objImage}.jpg`)} 
-          alt="painting with many objects"
+        <PhaseOnePlayerContainer 
+          wordArray={wordArray}
+          round={round}
+          letter={letter}
+          randomizeIcon={randomizeIcon}
+          randomizeLetterHandler={randomizeLetterHandler}
+          counter={counter}
+          startRound={startRound}
+          playerWord={playerWord}
+          setPlayerWord={setPlayerWord}
+          submitHandler={submitHandler}
+        />
+        <PhaseOneObjectImageContainer 
           blur={blur}
-        /> 
-      </div>
+          objImage={objImage}
+          phase={phase}
+        />
       </>
     }
-    
     {
       phase === "phase 2" && 
       <>
-        <div className="playerContainer2">
-          <PlayerAndWordContainer playerNumber={users.length}>
-            <button onClick={nextRoundHandler} className="nextRound-btn">Next Round</button>
-            {
-              userData.map((obj) => {
-                return(
-                  <details 
-                    open={obj.open} 
-                    onToggle={(event) => toggleHandler(event)}
-                    id={obj.userName}
-                  >
-                    <summary><u>{obj.userName}</u></summary>
-                    <ul>
-                      {obj.words.map((word) => 
-                        <li 
-                          onClick={(event) => wordClickHandler(event)}
-                          id={obj.userName}
-                          key={word}
-                        >{word}
-                        </li>
-                      )}
-                    </ul>
-                  </details>
-                )
-              })
-            }
-            <div>score</div>
-            {
-              userData.map((obj) => {
-                return(
-                  <div>{obj.open ? obj.score : "***"}</div>
-                ) 
-              })
-            }
-          </PlayerAndWordContainer>
-        </div>
-      <div className="objectImageContainer2" >
-        <BlurredImage
-          src={require(`../assets/kaleidos/${objImage}.jpg`)} 
-          alt="painting with many objects"
-          blur={blur}
-        /> 
-      </div>
+        <PhaseTwoPlayerContainer
+          users={users}
+          nextRoundHandler={nextRoundHandler}
+          userData={userData}
+          wordClickHandler={wordClickHandler}
+          toggleHandler={toggleHandler}
+        />
+        <PhaseTwoObjImage 
+          objImage={objImage}
+        />
       </>
     }
     {
       phase === "phase 3" && 
       <>
-        <div className="playerContainer3">
-            {
-              allScores.map((obj, index) => {
-                return(
-                  <>
-                    <div>{index+1}.</div>  
-                    <div>{obj.userName}</div>
-                    <div>{obj.score} Punkte</div>
-                  </>
-                )
-              })
-            }
-        </div>
+        <PhaseThreePlayerContainer 
+          allScores={allScores}
+        />
       </>
     }
     </div>
