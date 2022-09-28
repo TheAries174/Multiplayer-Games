@@ -11,7 +11,10 @@ import ChameleonGame from "./pages/ChameleonGame";
 import Kaleidos from "./pages/Kaleidos";
 import KaleidosCreateRoom from "./pages/KaleidosCreateRoom"; 
 import KaleidosJoinRoom from "./pages/KaleidosJoinRoom";
-import KaleidosGame from "./pages/KaleidosGame"
+import KaleidosGame from "./pages/KaleidosGame";
+import SoKleever from "./pages/SoKleever";
+import SoKleeverCreateRoom from './pages/SoKleeverCreateRoom';
+import SoKleeverJoinRoom from './pages/SoKleeverJoinRoom';
 import Navbar from "./components/Navbar";
 import { React } from "react" ;
 import  { socket, SocketContext } from "./socket";
@@ -32,6 +35,9 @@ function App() {
         <Route path="/games/kaleidos/createRoom" element={<KaleidosCreateRoom />} />
         <Route path="/games/kaleidos/joinRoom" element={<KaleidosJoinRoom />} />
         <Route path="/games/kaleidos/room:gameId/:userName" element={<KaleidosGame />} />
+        <Route path="/games/so-kleever" element={<SoKleever />} />
+        <Route path="/games/so-kleever/createRoom" element={<SoKleeverCreateRoom />} />
+        <Route path="/games/so-kleever/joinRoom" element={<SoKleeverJoinRoom />} />
         <Route path="/help" element={<Help/>}/>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

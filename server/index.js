@@ -126,4 +126,7 @@ io.on("connection", (socket) => {
 		console.log(`The new Letter is ${data.letter} and the new objImage is ${data.objImage}`)
 		io.to(data.gameId).emit("kaleidosNextRound", data)
 	})
+
+	//SO KLEEVER
+	
 })

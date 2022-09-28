@@ -3,6 +3,7 @@ import { ContainerAll, GameContainer, GameCover} from "./GamesOverview.styles" /
 import { useNavigate } from "react-router-dom";
 import chameleonLogo from "../../assets/images/chameleon-logo.png"
 import kaleidosLogo from "../../assets/images/kaleidos-logo.png"
+import soKleeverLogo from "../../assets/images/so-kleever-logo.png"
 
 //Functional Component with summary of the game
 const GamesCard = (props) => {
@@ -42,9 +43,12 @@ function GamesOverview() {
         altText={"kaleidos-logo"}
         style={{backgroundColor: "rgb(91, 184, 212)"}}
       />
-      <GameContainer>
-        3
-      </GameContainer>
+      <GamesCard
+        URL={"/games/so-kleever"}
+        logo={soKleeverLogo}
+        altText={"so-kleever-logo"}
+        style={{backgroundColor: "rgb(154, 202, 60)"}}
+      />
       <GameContainer>
         4
       </GameContainer>
