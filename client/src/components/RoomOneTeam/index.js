@@ -2,18 +2,10 @@ import React from 'react'
 import { ContainerAll, GameCodeContainer, CopyLogoImg, GameCodeNumber, GameCodeText, GameCode, GameCodeInstruction, PlayerListContainer, PlayerHeading, PlayerIconImg, PlayerList, StartContainer, StartBtn} from "./RoomOneTeam.styles"
 import copyLogo from "../../assets/images/copy-logo.svg"
 import playerIcon from "../../assets/images/player-icon.png"
-import { useNavigate } from "react-router-dom";
 
 
 function RoomOneTeam(props) {
-  const navigate = useNavigate()
-  function startGame(){
-    if (props.isGameMaster) {
-      const urlLink = `/games/${props.gameName}/room${props.gameId}/${props.users[0].userName}`
-      const urlState = {state: {isGameMaster: props.isGameMaster, users: props.users, data: {topic: {name:"", column:"", row:""}, chameleonPlayer: ""} }}
-      navigate(urlLink, urlState)
-    }
-  }
+
   return (
   <ContainerAll>
     <GameCodeContainer>
@@ -44,7 +36,7 @@ function RoomOneTeam(props) {
     </PlayerListContainer>
     <StartContainer>
       <p>Wait for other player to join before starting</p>
-      <StartBtn onClick={startGame}>Start</StartBtn>
+      <StartBtn onClick={props.startGame}>Start</StartBtn>
     </StartContainer>
   </ContainerAll>
   )

@@ -11,6 +11,7 @@ import ChameleonGame from "./pages/ChameleonGame";
 import Kaleidos from "./pages/Kaleidos";
 import KaleidosCreateRoom from "./pages/KaleidosCreateRoom"; 
 import KaleidosJoinRoom from "./pages/KaleidosJoinRoom";
+import KaleidosGame from "./pages/KaleidosGame"
 import Navbar from "./components/Navbar";
 import { React } from "react" ;
 import  { socket, SocketContext } from "./socket";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/games/kaleidos" element={<Kaleidos />} />
         <Route path="/games/kaleidos/createRoom" element={<KaleidosCreateRoom />} />
         <Route path="/games/kaleidos/joinRoom" element={<KaleidosJoinRoom />} />
+        <Route path="/games/kaleidos/room:gameId/:userName" element={<KaleidosGame />} />
         <Route path="/help" element={<Help/>}/>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
