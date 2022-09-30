@@ -23,7 +23,10 @@ export const GameCodeContainer = styled.div`
 
 export const CopyLogoImg = styled.img`
   width: 30px;
-  margin-right: 10px
+  margin-right: 10px;
+  &:hover {
+    cursor: pointer;
+  }
 `
 export const GameCodeNumber = styled.div`
   border-bottom: 1px solid black;
@@ -53,18 +56,29 @@ export const PlayerListContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-export const PlayerHeading = styled.div`
+export const PlayerHeadingContainer = styled.div`
   display: flex; 
   align-items: center;
   border-bottom: 1px solid gray;
   padding-bottom: 10px;
+  justify-content: space-between
 `;
 
+export const PlayerHeading = styled.div`
+  display: flex;
+  align-items: center
+`
 export const PlayerIconImg = styled.img`
   width: 30px;
   margin-right: 20px;
 `;
 
+export const RandomizeIcon = styled.img`
+  width: 25px;
+  &:hover {
+    cursor: pointer;
+}
+`
 export const PlayerList = styled.div`
   display: flex;
   justify-content: space-around;
@@ -74,6 +88,9 @@ export const PlayerList = styled.div`
 export const SwitchIconBtn = styled.button`
   background-color: white;  
   border: 0px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const SwitchIconImg = styled.img`
@@ -102,4 +119,7 @@ export const StartBtn = styled.button`
   border: 0px;
   border-radius: 10px;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)); 
+  &:hover {
+    cursor: pointer;
+  }
 `;

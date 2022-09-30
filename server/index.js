@@ -55,7 +55,7 @@ io.on("connection", (socket) => {
 		socket.to(gameId).emit("requestRoomData", {
 			userName: userName,
 			userId: socket.id,
-			gameId: gameId  //vllt gameId Rauslassen, weil unnötig
+			gameId: gameId 
 		})
 	})
 

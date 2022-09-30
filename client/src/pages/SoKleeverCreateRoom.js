@@ -13,9 +13,13 @@ const SoKleeverCreateRoom = () => {
 
   const socket = React.useContext(SocketContext)
   const tempUserList = useRef()
+  const currentTeam1 = useRef()
+  const currentTeam2 = useRef()
   const navigate = useNavigate()
   
-  const thisUser = useRef()
+  const currentUser = useRef()
+  currentUser.current = users.find((user) => user.userId === socket.id)
+  console.log(currentUser)
 
   useEffect(() => {
 
@@ -27,6 +31,8 @@ const SoKleeverCreateRoom = () => {
       }])
       console.log(`${roomData.user1.userName} has created Room ${roomData.gameId}`)
       setGameMaster(true)
+      currentTeam1.current = [roomData.user1]
+      setTeam1(currentTeam1.current)
     })
 
     socket.on("requestRoomData", (newUser) => {
@@ -35,32 +41,36 @@ const SoKleeverCreateRoom = () => {
           userId: newUser.userId,
           userName: newUser.userName
         }]
-        setUsers(prevUsers => [...prevUsers, {
-          userId: newUser.userId,
-          userName: newUser.userName
-        }])
+        setUsers(tempUserList.current)
         console.log(`${newUser.userName} has joined the lobby`)
-        console.log(tempUserList)
+        if (team1.length > team2.length) {
+          currentTeam2.current = [...team2, newUser]
+          setTeam2(currentTeam2.current)
+        }
+        if (team2.length >= team1.length) {
+          currentTeam1.current = [...team1, newUser]
+          setTeam1(currentTeam1.current)
+        }
         socket.emit("sendRoomDataServer", {
           gameId: newUser.gameId,
           user1: tempUserList.current[0],
-          users: tempUserList.current
-          //team1
-          //team2
+          users: tempUserList.current,
+          team1: currentTeam1.current,
+          team2: currentTeam2.current
         })
       }
     })
     socket.on("receiveRoomData", (roomData) => {
       setGameId(roomData.gameId)
       setUsers(roomData.users)
-      //setTeam1
-      //setTeam2
+      setTeam1(roomData.team1)
+      setTeam2(roomData.team2)
     })
 
-    socket.on("chameleonReceivePlayers", (data) => {
-      thisUser.current = data.users.find((user) => user.userId === socket.id)
-      console.log(thisUser)
-      navigate(`/games/chameleon/room${data.gameId}/${thisUser.current.userName}`, 
+    socket.on("soKleeverReceivePlayers", (data) => {
+      currentUser.current = data.users.find((user) => user.userId === socket.id)
+      console.log(currentUser)
+      navigate(`/games/so-kleever/room${data.gameId}/${currentUser.current.userName}`, 
       {state: {isGameMaster: isGameMaster, users: users, data: data }})
     })
 
@@ -68,24 +78,36 @@ const SoKleeverCreateRoom = () => {
       socket.off("create");
       socket.off("requestRoomData")
       socket.off("receiveRoomData")
-      socket.off("chameleonReceivePlayers")
+      socket.off("soKleeverReceivePlayers")
     }
   })
   
-  function startGame(){
+  function startGame() {
     if (isGameMaster) {
-      const urlLink = `/games/chameleon/room${gameId}/${users[0].userName}`
-      const urlState = {state: {isGameMaster: isGameMaster, users: users, data: {topic: {name:"", column:"", row:""}, chameleonPlayer: ""} }}
+      const urlLink = `/games/so-kleever/room${gameId}/${users[0].userName}`
+      const urlState = {state: {isGameMaster: isGameMaster, users: users, data: {} }}
       navigate(urlLink, urlState)
     }
   }
 
+  function changeTeams() {
+
+  }
+
+  function randomizeTeams() {
+
+  }
   return (
   <RoomTwoTeam 
     gameId={gameId}
     users={users}
     isGameMaster={isGameMaster}
     startGame={startGame}
+    team1={team1}
+    team2={team2}
+    currentUser={currentUser.current}
+    changeTeams={changeTeams}
+    randomizeTeams={randomizeTeams}
   />
 )
 }

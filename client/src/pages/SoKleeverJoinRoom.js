@@ -13,7 +13,7 @@ const SoKleeverJoinRoom = () => {
   function submitData(event) {
     event.preventDefault(); // prevents error "Form submission canceled because the form is not connected"
     socket.emit("JoinRoom", [gameId, playerName])
-    navigate("/games/kaleidos/createRoom")
+    navigate("/games/so-kleever/createRoom")
   }  
 
   return (
