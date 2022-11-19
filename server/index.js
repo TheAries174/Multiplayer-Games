@@ -4,11 +4,12 @@ const socketio = require("socket.io")
 const cors = require("cors")
 
 const app = express()
+const PORT = process.env.PORT || 3001
 app.use(cors())
 const server = http.createServer(app)
 
-server.listen(3001, () => {
-    console.log(`Server is running on`)
+server.listen(PORT, () => {
+    console.log(`Server is running on ${PORT}`)
 })
 
 const io = socketio(server, {
